@@ -1,0 +1,25 @@
+{
+  "name": "brace-up-elephant-api",
+  "version": "0.1.0",
+  "description": "expressjs postgresql",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "expressjs",
+    "api",
+    "postgresql"
+  ],
+  "author": "Konstrukteur",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "pg": "^8.10.0",
+    "sass": "^1.60.0"
+  }
+}
