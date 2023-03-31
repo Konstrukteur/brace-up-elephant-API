@@ -1,13 +1,13 @@
 import pool from "../config/database.js";
 
-const showOrders = async (request, response, next) => {
+const index = async (request, response, next) => {
   const sql = `SELECT * FROM orders ORDER BY id ASC`;
   const { rows: orders } = await pool.query(sql);
 
   response.json(orders);
 };
 
-const createOrder = async (request, response, next) => {
+const create = async (request, response, next) => {
   const sql = `INSERT INTO orders (price, date, user_id) VALUES ($1, $2, $3) RETURNING *`;
   const { price, date, user_id } = request.body;
 
@@ -19,7 +19,7 @@ const createOrder = async (request, response, next) => {
   response.status(201).json(order);
 };
 
-const showOrder = async (request, response, next) => {
+const show = async (request, response, next) => {
   const sql = `SELECT * FROM orders WHERE id = $1`;
   const { id } = request.params;
   const {
@@ -29,7 +29,7 @@ const showOrder = async (request, response, next) => {
   response.json(order);
 };
 
-const updateOrder = async (request, response, next) => {
+const update = async (request, response, next) => {
   const sql = `UPDATE orders SET price = $1, date = $2, user_id = $3 WHERE id = $4 RETURNING *`;
   const { id } = request.params;
   const { price, date, user_id } = request.body;
@@ -42,7 +42,7 @@ const updateOrder = async (request, response, next) => {
   response.json(order);
 };
 
-const deleteOrder = async (request, response, next) => {
+const destroy = async (request, response, next) => {
   const sql = `DELETE FROM orders WHERE id = $1`;
   const { id } = request.params;
   const { rows: order } = await pool.query(sql, [id]);
@@ -50,4 +50,4 @@ const deleteOrder = async (request, response, next) => {
   response.json(order);
 };
 
-export { showOrders, createOrder, showOrder, updateOrder, deleteOrder };
+export { index, show, create, update, destroy };

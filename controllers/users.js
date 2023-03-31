@@ -1,65 +1,64 @@
-import pool from "../config/database.js";
+import {
+  getUsers,
+  createUser,
+  showUser,
+  updateUser,
+  destroyUser,
+  flagInactive,
+} from "../models/user.js";
 
-const showUsers = async (request, response, next) => {
-  const sql = `SELECT * FROM users WHERE active = TRUE ORDER BY id ASC`;
-  const { rows: users } = await pool.query(sql);
+const index = async (req, res) => {
+  const users = await getUsers();
 
-  response.json(users);
+  res.json(users);
 };
 
-const createUser = async (request, response, next) => {
-  const sql = `INSERT INTO users (first_name, last_name, age, active) VALUES ($1, $2, $3, $4) RETURNING *`;
-  const { first_name, last_name, age, active } = request.body;
+const create = async (req, res) => {
+  const { first_name, last_name, age, active } = req.body;
 
   if (!first_name || !last_name || !age || !active)
-    return response.json({ error: "Missing data" });
+    return res.json({ error: "Missing data" });
 
-  const { rows: users } = await pool.query(sql, [
-    first_name,
-    last_name,
-    age,
-    active,
-  ]);
+  const user = await createUser(first_name, last_name, age, active);
 
-  response.status(201).json(users);
+  res.status(201).json(user);
 };
 
-const showUser = async (request, response, next) => {
-  const sql = `SELECT * FROM users WHERE id = $1`;
-  const { id } = request.params;
-  const {
-    rows: [user],
-  } = await pool.query(sql, [id]);
+const show = async (req, res) => {
+  const { id } = req.params;
 
-  response.json(user);
+  const user = await showUser(id);
+
+  res.json(user);
 };
 
-const updateUser = async (request, response, next) => {
-  const sql = `UPDATE users SET first_name = $1, last_name = $2, age = $3, active = $4 WHERE id = $5 RETURNING *`;
-  const { id } = request.params;
-  const { first_name, last_name, age, active } = request.body;
+const update = async (req, res) => {
+  const { id } = req.params;
+  const { first_name, last_name, age, active } = req.body;
 
   if (!first_name || !last_name || !age || !active || !id)
-    return response.json({ error: "Missing data" });
+    return res.json({ error: "Missing data" });
 
-  const { rows: user } = await pool.query(sql, [
-    first_name,
-    last_name,
-    age,
-    active,
-    id,
-  ]);
+  const user = await updateUser(id, first_name, last_name, age, active);
 
-  response.json(user);
+  res.json(user);
 };
 
-const deleteUser = async (request, response, next) => {
-  const sql = `DELETE FROM users WHERE id = $1`;
+const destroy = async (req, res) => {
+  const { id } = req.params;
+  const user = await destroyUser(id);
 
-  const { id } = request.params;
-  const { rows: user } = await pool.query(sql, [id]);
-
-  response.json(user);
+  res.json(user);
 };
 
-export { showUsers, createUser, showUser, updateUser, deleteUser };
+const setInactive = async (req, res) => {
+  const { id } = req.params;
+
+  const response = await flagInactive(id);
+
+  request.json({
+    message: response ? "user marked as inactive" : "user is active",
+  });
+};
+
+export { index, create, show, update, destroy, setInactive };

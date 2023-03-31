@@ -3,8 +3,8 @@ import express from "express";
 import cors from "cors";
 
 // # Import Routes
-import userRoutes from "./routes/user.js";
-import orderRoutes from "./routes/order.js";
+import userRoutes from "./routes/users.js";
+import orderRoutes from "./routes/orders.js";
 
 // # Set up Express
 const app = express();
